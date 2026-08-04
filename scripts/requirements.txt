@@ -1,0 +1,8 @@
+# daily workflow (fetch + render) — keep this minimal, it installs every day
+requests
+beautifulsoup4
+
+# The portrait pipeline (prep_photo.py / make_ascii_svg.py / make_info_card.py)
+# only runs locally when the photo or card text changes. It additionally needs:
+#   pip install pillow numpy opencv-python-headless
+# (rembg is optional — the script falls back to corner-sampled chroma keying)
