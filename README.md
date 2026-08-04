@@ -6,29 +6,43 @@
 
 *Turning research into production — LLM applications, RAG systems, and end-to-end machine learning.*
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/syedzulqarnainh)
-[![Email](https://img.shields.io/badge/Email-Reach%20me-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:zulqarnainhsyed@gmail.com)
-[![GitHub](https://img.shields.io/badge/GitHub-Follow-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Zulqarnain-10)
+<br>
+
+<h3><code>zulqarnain@github:~$ ./contributions.sh --last-year</code></h3>
+
+<img src="contrib-heatmap.svg" width="860" alt="Animated heatmap of my GitHub contributions over the last year — regenerated daily by GitHub Actions" />
+
+<br><br>
+
+<h3><code>zulqarnain@github:~$ whoami</code></h3>
+
+<table>
+<tr>
+<td valign="top"><img src="ascii-portrait.svg" width="370" alt="Self-typing ASCII art portrait of Syed Zulqarnain Hassan" /></td>
+<td valign="top"><img src="info-card.svg" width="490" alt="Terminal-style info card — role, education, tech stack, and flagship projects" /></td>
+</tr>
+</table>
+
+<br>
+
+<h3><code>zulqarnain@github:~$ ls ./flagship-projects</code></h3>
 
 </div>
 
----
+🤖 **[JobCraft](https://github.com/Zulqarnain-10/JobCraft)** — AI-agent job-search platform: resume analysis, job matching across LinkedIn/Indeed/Glassdoor, and interview prep in one Streamlit app.
+&nbsp;&nbsp;&nbsp;&nbsp;`LangChain` · `OpenAI` · `FAISS` · `Streamlit`
 
-## 👨‍💻 About Me
+🩺 **[MedBot](https://github.com/Zulqarnain-10/AI-Powered-Medical-Chatbot-Using-LLM-s-for-Smart-Healthcare-Assistance)** — RAG medical Q&A assistant that grounds every answer in a medical reference to reduce hallucination.
+&nbsp;&nbsp;&nbsp;&nbsp;`LangChain` · `Pinecone` · `OpenAI` · `Flask`
 
-🎓 **M.S. in Data Science** @ New York Institute of Technology — **GPA 3.86/4.0** · *Data Science Graduate Achievement Award*
+♻️ **[Advanced Material Classification](https://github.com/Zulqarnain-10/Advanced-Material-Classification-Using-Sensor-Fusion-Machine-Learning)** — CNN + multi-sensor fusion recycling sorter (~96% accuracy) on a Raspberry Pi + Arduino rig.
+&nbsp;&nbsp;&nbsp;&nbsp;`TensorFlow` · `Keras` · `Computer Vision` · `IoT`
 
-🤖 AI/ML Engineer who has shipped **38+ client projects** across LLMs, computer vision, and NLP
+<div align="center">
 
-🔬 Research Assistant working on **LLM applications & semantic search**
+<br>
 
-⚡ I build **RAG pipelines, multi-agent systems, and production ML** — from notebook to deployed app
-
-🗽 US-based (Brooklyn, NY) · open to **Data Scientist / ML Engineer / AI Engineer** roles
-
----
-
-## 🛠️ Tech Stack
+<h3><code>zulqarnain@github:~$ cat tech-stack.txt</code></h3>
 
 **Languages**
 
@@ -70,34 +84,18 @@
 ![Pandas](https://img.shields.io/badge/Pandas-150458?style=flat-square&logo=pandas&logoColor=white)
 ![NumPy](https://img.shields.io/badge/NumPy-013243?style=flat-square&logo=numpy&logoColor=white)
 
----
+<br>
 
-## 📌 Featured Projects
+<h3><code>zulqarnain@github:~$ ./connect.sh</code></h3>
 
-🤖 **[JobCraft](https://github.com/Zulqarnain-10/JobCraft)** — AI-agent job-search platform: resume analysis, job matching across LinkedIn/Indeed/Glassdoor, and interview prep in one Streamlit app.
-`LangChain` · `OpenAI` · `FAISS` · `Streamlit`
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/syedzulqarnainh)
+[![Email](https://img.shields.io/badge/Email-Reach%20me-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:zulqarnainhsyed@gmail.com)
+[![GitHub](https://img.shields.io/badge/GitHub-Follow-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Zulqarnain-10)
 
-🩺 **[MedBot](https://github.com/Zulqarnain-10/AI-Powered-Medical-Chatbot-Using-LLM-s-for-Smart-Healthcare-Assistance)** — RAG medical Q&A assistant that grounds every answer in a medical reference to reduce hallucination.
-`LangChain` · `Pinecone` · `OpenAI` · `Flask`
-
-♻️ **[Advanced Material Classification](https://github.com/Zulqarnain-10/Advanced-Material-Classification-Using-Sensor-Fusion-Machine-Learning)** — CNN + multi-sensor fusion recycling sorter (~96% accuracy) on a Raspberry Pi + Arduino rig.
-`TensorFlow` · `Keras` · `Computer Vision` · `IoT`
-
----
-
-## 📊 GitHub Stats
-
-<div align="center">
-
-![Zulqarnain's GitHub stats](https://github-readme-stats.vercel.app/api?username=Zulqarnain-10&show_icons=true&theme=tokyonight&hide_border=true&count_private=true)
-![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=Zulqarnain-10&layout=compact&theme=tokyonight&hide_border=true&langs_count=8)
-
-</div>
-
----
-
-<div align="center">
+<br>
 
 *Let's build something intelligent.* 🚀
+
+<sub>Everything above is self-generated animated SVG — no third-party stats services, no tokens. A tiny Python pipeline in <a href="scripts">scripts/</a> draws it, and <a href=".github/workflows/update-profile-art.yml">a GitHub Action</a> refreshes the contribution graph every day.</sub>
 
 </div>
