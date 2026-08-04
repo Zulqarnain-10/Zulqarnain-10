@@ -2,7 +2,7 @@
 
 # Hi, I'm Syed Zulqarnain Hassan 👋
 
-### 🤖 AI/ML Engineer · 📊 Data Scientist · 📍 Brooklyn, NY
+### 🤖 AI/ML Engineer · 📊 Data Scientist · 📍 Dix Hills, New York
 
 *Turning research into production — LLM applications, RAG systems, and end-to-end machine learning.*
 
@@ -89,7 +89,7 @@
 <h3><code>zulqarnain@github:~$ ./connect.sh</code></h3>
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/syedzulqarnainh)
-[![Email](https://img.shields.io/badge/Email-Reach%20me-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:zulqarnainhsyed@gmail.com)
+[![Email](https://img.shields.io/badge/Email-Reach%20me-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:s.zulqarnain1000@gmail.com)
 [![GitHub](https://img.shields.io/badge/GitHub-Follow-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Zulqarnain-10)
 
 <br>
