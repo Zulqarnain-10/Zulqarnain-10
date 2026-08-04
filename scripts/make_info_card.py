@@ -32,7 +32,7 @@ LINES = [
     ("Role:", "AI/ML Engineer · Data Scientist", None),
     ("Degree:", "M.S. Data Science — NYIT '26 · 3.86 GPA", None),
     ("Award:", "Data Science Graduate Achievement Award", None),
-    ("Base:", "Brooklyn, NY (US)", None),
+    ("Base:", "Dix Hills, NY (US)", None),
     ("Shipped:", "38+ client AI/ML projects", None),
     ("Flagships:", "JobCraft · MedBot · Material Classification", None),
     ("Focus:", "LLM apps · RAG · production ML", None),
@@ -83,7 +83,7 @@ def main():
 
     p = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" '
-        f'role="img" aria-label="Terminal card: Syed Zulqarnain Hassan — AI/ML Engineer and Data Scientist, Brooklyn NY">',
+        f'role="img" aria-label="Terminal card: Syed Zulqarnain Hassan — AI/ML Engineer and Data Scientist, Dix Hills NY">',
         f'<rect x="0.5" y="0.5" width="{W-1}" height="{H-1}" rx="9" fill="#0d1117" stroke="#30363d"/>',
         f'<line x1="0" y1="{BAR_H}" x2="{W}" y2="{BAR_H}" stroke="#21262d"/>',
     ]
