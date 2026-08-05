@@ -8,10 +8,17 @@ Design choices (deliberate):
   * Each row is wrapped in a clip that wipes left-to-right with a block
     cursor riding the edge; rows are staggered top-to-bottom. Plays once,
     then freezes (SMIL, so GitHub renders it inside <img>).
+  * A duplicate static layer is shown instead of the animation under
+    prefers-reduced-motion (CSS media queries can't stop SMIL, so we swap
+    layers). STATIC=1 renders only the static layer for previews.
+  * A '$ render complete' status line closes the card and pads its height
+    to exactly match info-card.svg when both sit side by side in the README
+    (this 768x843 at width 366 == the 490x405 card at width 486).
 
 Usage:
     python scripts/make_ascii_svg.py [prepped.png] [ascii-portrait.svg]
 """
+import os
 import sys
 from xml.sax.saxutils import escape
 
@@ -24,15 +31,20 @@ CELL_W, CELL_H = 7.2, 12.0
 FONT = "ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace"
 INK = "#b9c2cc"
 CURSOR = "#58a6ff"
+GREEN = "#3fb950"
+DIM = "#8b949e"
+FG = "#c9d1d9"
 
 PAD = 24
 BAR_H = 36
+H_TOTAL = 843  # matches the info card's rendered height in the README layout
 T0 = 0.35  # s before first row starts
-ROW_DUR = 0.45  # s for one row's wipe
-STAGGER = 0.05  # s between row starts
-
+ROW_DUR = 0.30  # s for one row's wipe
+STAGGER = 0.025  # s between row starts
 
 GAMMA = 1.0  # >1 darkens mid-tones (highlight compression happens in prep_photo)
+
+STATIC = os.environ.get("STATIC") == "1"
 
 
 def to_grid(path):
@@ -43,15 +55,26 @@ def to_grid(path):
     return ["".join(RAMP[i] for i in row) for row in idx]
 
 
+def row_text(x, y, row, row_w, extra=""):
+    return (
+        f'<text{extra} x="{x}" y="{y + CELL_H - 2.5}" xml:space="preserve" '
+        f'font-family="{FONT}" font-size="12" fill="{INK}" '
+        f'textLength="{row_w:.0f}" lengthAdjust="spacingAndGlyphs">{escape(row)}</text>'
+    )
+
+
 def main():
     src = sys.argv[1] if len(sys.argv) > 1 else "source-prepped.png"
     out = sys.argv[2] if len(sys.argv) > 2 else "ascii-portrait.svg"
     grid = to_grid(src)
+    n_rows = sum(1 for g in grid if g.strip())
 
-    art_w, art_h = COLS * CELL_W, ROWS * CELL_H
+    art_w = COLS * CELL_W
     W = int(art_w + 2 * PAD)
-    H = int(BAR_H + art_h + PAD + 12)
+    H = H_TOTAL
     ox, oy = PAD, BAR_H + 6
+    status_y = oy + ROWS * CELL_H + 24  # '$ render complete' baseline
+    t_done = T0 + (ROWS - 1) * STAGGER + ROW_DUR
 
     p = []
     p.append(
@@ -59,6 +82,13 @@ def main():
         f'width="{W}" height="{H}" role="img" '
         f'aria-label="ASCII art portrait of Syed Zulqarnain Hassan, typed in row by row">'
     )
+    if not STATIC:
+        p.append(
+            "<style>"
+            ".static{display:none}"
+            "@media (prefers-reduced-motion:reduce){.anim{display:none}.static{display:inline}}"
+            "</style>"
+        )
     # terminal window
     p.append(f'<rect x="0.5" y="0.5" width="{W-1}" height="{H-1}" rx="9" fill="#0d1117" stroke="#30363d"/>')
     p.append(f'<line x1="0" y1="{BAR_H}" x2="{W}" y2="{BAR_H}" stroke="#21262d" stroke-width="1"/>')
@@ -66,46 +96,79 @@ def main():
         p.append(f'<circle cx="{20 + i * 20}" cy="{BAR_H / 2}" r="5.5" fill="{c}"/>')
     p.append(
         f'<text x="{W / 2}" y="{BAR_H / 2 + 4}" text-anchor="middle" font-family="{FONT}" '
-        f'font-size="12" fill="#8b949e">zulqarnain@github: ~/portrait</text>'
+        f'font-size="12" fill="{DIM}">zulqarnain@github: ~</text>'
     )
 
-    defs, body = [], []
+    status_plain = f"$ render complete · {n_rows} rows · {t_done:.1f}s"
+    status = (
+        f'<tspan fill="{GREEN}">$ </tspan><tspan fill="{FG}">render complete</tspan>'
+        f'<tspan fill="{DIM}"> · {n_rows} rows · {t_done:.1f}s</tspan>'
+    )
+    cursor_x = ox + (len(status_plain) + 1) * 7.2  # one space after the text
+
+    # ---- static layer: full portrait + status, no motion ----------------
+    static_parts = []
     for r, raw in enumerate(grid):
         row = raw.rstrip()
         if not row:
             continue
-        y = oy + r * CELL_H
-        beg = T0 + r * STAGGER
-        end = beg + ROW_DUR
-        row_w = len(row) * CELL_W
-        cid = f"c{r}"
-        defs.append(
-            f'<clipPath id="{cid}"><rect x="{ox}" y="{y}" width="0" height="{CELL_H + 1}">'
-            f'<animate attributeName="width" from="0" to="{row_w:.0f}" '
-            f'begin="{beg:.2f}s" dur="{ROW_DUR}s" fill="freeze"/></rect></clipPath>'
-        )
-        body.append(
-            f'<text x="{ox}" y="{y + CELL_H - 2.5}" clip-path="url(#{cid})" xml:space="preserve" '
-            f'font-family="{FONT}" font-size="12" fill="{INK}" '
-            f'textLength="{row_w:.0f}" lengthAdjust="spacingAndGlyphs">{escape(row)}</text>'
-        )
-        # block cursor riding the wipe edge
-        body.append(
-            f'<rect x="{ox}" y="{y + 1}" width="{CELL_W}" height="{CELL_H - 2}" fill="{CURSOR}" opacity="0">'
-            f'<set attributeName="opacity" to="0.9" begin="{beg:.2f}s"/>'
-            f'<animate attributeName="x" from="{ox}" to="{ox + row_w:.0f}" '
-            f'begin="{beg:.2f}s" dur="{ROW_DUR}s" fill="freeze"/>'
-            f'<set attributeName="opacity" to="0" begin="{end:.2f}s" fill="freeze"/></rect>'
-        )
+        static_parts.append(row_text(ox, oy + r * CELL_H, row, len(row) * CELL_W))
+    static_parts.append(
+        f'<text x="{ox}" y="{status_y}" xml:space="preserve" font-family="{FONT}" '
+        f'font-size="12">{status}</text>'
+    )
+    static_parts.append(
+        f'<rect x="{cursor_x:.0f}" y="{status_y - 11}" width="7.2" height="13" fill="{FG}"/>'
+    )
 
-    p.append("<defs>" + "".join(defs) + "</defs>")
-    p.extend(body)
-    p.append("</svg>")
+    if STATIC:
+        p.extend(static_parts)
+        p.append("</svg>")
+    else:
+        # ---- animated layer: SMIL row wipes + cursor sweeps -------------
+        defs, body = [], []
+        for r, raw in enumerate(grid):
+            row = raw.rstrip()
+            if not row:
+                continue
+            y = oy + r * CELL_H
+            beg = T0 + r * STAGGER
+            end = beg + ROW_DUR
+            row_w = len(row) * CELL_W
+            cid = f"c{r}"
+            defs.append(
+                f'<clipPath id="{cid}"><rect x="{ox}" y="{y}" width="0" height="{CELL_H + 1}">'
+                f'<animate attributeName="width" from="0" to="{row_w:.0f}" '
+                f'begin="{beg:.2f}s" dur="{ROW_DUR}s" fill="freeze"/></rect></clipPath>'
+            )
+            body.append(row_text(ox, y, row, row_w, extra=f' clip-path="url(#{cid})"'))
+            # block cursor riding the wipe edge
+            body.append(
+                f'<rect x="{ox}" y="{y + 1}" width="{CELL_W}" height="{CELL_H - 2}" fill="{CURSOR}" opacity="0">'
+                f'<set attributeName="opacity" to="0.9" begin="{beg:.2f}s"/>'
+                f'<animate attributeName="x" from="{ox}" to="{ox + row_w:.0f}" '
+                f'begin="{beg:.2f}s" dur="{ROW_DUR}s" fill="freeze"/>'
+                f'<set attributeName="opacity" to="0" begin="{end:.2f}s" fill="freeze"/></rect>'
+            )
+        # status line appears once the last row lands, then the cursor blinks
+        body.append(
+            f'<g opacity="0"><set attributeName="opacity" to="1" begin="{t_done + 0.1:.2f}s" fill="freeze"/>'
+            f'<text x="{ox}" y="{status_y}" xml:space="preserve" font-family="{FONT}" '
+            f'font-size="12">{status}</text></g>'
+        )
+        body.append(
+            f'<rect x="{cursor_x:.0f}" y="{status_y - 11}" width="7.2" height="13" fill="{FG}" opacity="0">'
+            f'<animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;0.01;0.5;0.51;1" '
+            f'begin="{t_done + 0.3:.2f}s" dur="1.2s" repeatCount="indefinite"/></rect>'
+        )
+        p.append('<g class="anim"><defs>' + "".join(defs) + "</defs>" + "".join(body) + "</g>")
+        p.append('<g class="static">' + "".join(static_parts) + "</g>")
+        p.append("</svg>")
 
     svg = "".join(p)
-    with open(out, "w") as f:
+    with open(out, "w", encoding="utf-8") as f:
         f.write(svg)
-    print(f"wrote {out}: {len(svg) / 1024:.0f} KB, {sum(1 for g in grid if g.strip())} rows")
+    print(f"wrote {out}: {len(svg) / 1024:.0f} KB, {n_rows} rows, done at {t_done:.2f}s")
 
 
 if __name__ == "__main__":

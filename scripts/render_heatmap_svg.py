@@ -84,7 +84,7 @@ def main():
         p.append(f'<circle cx="{20 + i * 20}" cy="{BAR_H / 2}" r="5.5" fill="{c}"/>')
     p.append(
         f'<text x="{W / 2}" y="{BAR_H / 2 + 4}" text-anchor="middle" font-family="{FONT}" '
-        f'font-size="12" fill="{DIM}">zulqarnain@github: ~/contributions --last-year</text>'
+        f'font-size="12" fill="{DIM}">zulqarnain@github: ~</text>'
     )
 
     # month labels (skip labels that would crowd the previous one)
@@ -120,11 +120,17 @@ def main():
 
     s = data["stats"]
     best_dt = datetime.strptime(s["best_day"]["date"], "%Y-%m-%d").date()
+    # a dead current streak is not a stat worth advertising — show the daily
+    # average instead whenever the streak is 0
+    if s["current_streak"] > 0:
+        mid_stat = f'{s["current_streak"]}d streak'
+    else:
+        mid_stat = f'avg {data["total"] / max(1, len(days)):.1f}/day'
     stats_text = (
         f'<tspan fill="{GREEN}" font-weight="bold">{data["total"]:,}</tspan>'
         f'<tspan fill="{FG}"> contributions in the last year</tspan>'
-        f'<tspan fill="{DIM}">  ·  {s["current_streak"]}d streak  ·  '
-        f'{s["longest_streak"]}d longest  ·  best {best_dt.strftime("%b %-d")}: '
+        f'<tspan fill="{DIM}">  ·  {mid_stat}  ·  '
+        f'{s["longest_streak"]}d longest  ·  best {best_dt.strftime("%b")} {best_dt.day}: '
         f'{s["best_day"]["count"]}</tspan>'
     )
     p.append(
@@ -146,7 +152,7 @@ def main():
     p.append("</svg>")
 
     svg = "".join(p)
-    with open(out, "w") as f:
+    with open(out, "w", encoding="utf-8") as f:
         f.write(svg)
     print(f"wrote {out}: {len(svg) / 1024:.0f} KB, {ncols} weeks, max {max_count}")
 
