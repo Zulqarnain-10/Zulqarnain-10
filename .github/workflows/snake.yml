@@ -36,5 +36,7 @@ jobs:
             echo "nothing changed"
           else
             git commit -m "chore: refresh snake [skip ci]"
+            # the profile-art workflow may have pushed while we ran — rebase first
+            git pull --rebase origin main
             git push
           fi
