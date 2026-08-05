@@ -1,6 +1,6 @@
 <div align="center">
 
-# Hi, I'm Syed Zulqarnain Hassan 👋
+# Hi, I'm Syed Zulqarnain Hassan 👋🏼
 
 ### 🤖 AI/ML Engineer · 📊 Data Scientist · 📍 New York
 
