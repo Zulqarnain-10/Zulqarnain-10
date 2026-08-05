@@ -1,56 +1,74 @@
-"""Terminal-style tech-stack card SVG — replaces the shields.io badge wall.
+"""Terminal-style tech-stack card SVG with real brand logos.
 
-One 860-wide card, `cat tech-stack.txt`, categories as green keys and tools
-as values, printed line by line. Keeping this self-generated (instead of 25
-shields.io badges) makes the README's 'no third-party image services' claim
-literally true and keeps every color on the terminal palette.
+One 860-wide card, `cat tech-stack.txt`: categories as green keys, tools as
+values, each tool preceded by its brand icon (vendored simple-icons paths in
+scripts/icons.json — zero network requests at view time). Tools whose brands
+aren't in simple-icons get a small rounded color chip instead.
 
     python scripts/make_tech_stack.py [tech-stack.svg]
 
 STATIC=1 renders a frozen frame. CSS keyframes + prefers-reduced-motion.
 """
+import json
 import os
 import sys
+from pathlib import Path
 from xml.sax.saxutils import escape
 
 FONT = "ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace"
 FG = "#c9d1d9"
 KEY = "#7ee787"
 GREEN = "#3fb950"
-BLUE = "#58a6ff"
 DIM = "#8b949e"
 
 W = 860
 BAR_H = 36
 PAD_X = 20
-LINE_H = 21.5
+LINE_H = 27
 FS = 13
-KEY_W = 15  # key column width in characters
+CH = 7.8          # forced char advance via textLength
+ITEM_X = PAD_X + 16 * CH  # value column (longest key is 15 chars + 1 gap)
+ICON = 13         # icon box size
+ICON_GAP = 5
+SEP = 16          # gap holding the separator dot
 
 STATIC = os.environ.get("STATIC") == "1"
 
-# (key, [items]) — first item of each row is the core tool, tinted blue
 STACK = [
     ("Languages", ["Python", "SQL", "R", "JavaScript"]),
     ("ML / DL", ["PyTorch", "TensorFlow", "scikit-learn", "Keras", "MLflow"]),
     ("LLMs & GenAI", ["LangChain", "LlamaIndex", "OpenAI", "Anthropic", "Hugging Face"]),
-    ("Vector stores", ["FAISS", "Pinecone", "ChromaDB"]),
-    ("Cloud & data", ["AWS", "Docker", "FastAPI", "Flask", "PostgreSQL", "MongoDB", "Pandas", "NumPy"]),
+    ("Data & vectors", ["Pandas", "NumPy", "FAISS", "Pinecone", "ChromaDB"]),
+    ("Cloud & backend", ["AWS", "Docker", "FastAPI", "Flask", "PostgreSQL", "MongoDB"]),
 ]
+
+# brands not in simple-icons -> rounded color chip
+CHIP_COLORS = {
+    "SQL": "#d29922",
+    "OpenAI": "#10A37F",
+    "LlamaIndex": "#bc8cff",
+    "Pinecone": "#39c5cf",
+    "ChromaDB": "#ff7b72",
+    "FAISS": "#58a6ff",
+    "AWS": "#FF9900",
+}
 
 T0 = 0.4
 STAGGER = 0.12
+
+ICONS = json.loads((Path(__file__).parent / "icons.json").read_text(encoding="utf-8"))
 
 
 def main():
     out = sys.argv[1] if len(sys.argv) > 1 else "tech-stack.svg"
     n = len(STACK) + 1  # + command line
-    H = int(BAR_H + 26 + n * LINE_H + 20)
+    H = int(BAR_H + 26 + n * LINE_H + 14)
 
     p = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" '
-        f'role="img" aria-label="Tech stack: Python, SQL, PyTorch, TensorFlow, LangChain, OpenAI, '
-        f'FAISS, Pinecone, AWS, Docker and more">',
+        f'role="img" aria-label="Tech stack: Python, SQL, R, JavaScript; PyTorch, TensorFlow, '
+        f'scikit-learn, Keras, MLflow; LangChain, LlamaIndex, OpenAI, Anthropic, Hugging Face; '
+        f'Pandas, NumPy, FAISS, Pinecone, ChromaDB; AWS, Docker, FastAPI, Flask, PostgreSQL, MongoDB">',
     ]
     if not STATIC:
         p.append(
@@ -71,23 +89,52 @@ def main():
         f'font-size="12" fill="{DIM}">zulqarnain@github: ~</text>'
     )
 
-    def emit(i, spans):
-        y = BAR_H + 26 + i * LINE_H
-        cls = "" if STATIC else f' class="l" style="animation-delay:{T0 + i * STAGGER:.2f}s"'
-        p.append(
-            f'<text{cls} x="{PAD_X}" y="{y}" xml:space="preserve" font-family="{FONT}" '
-            f'font-size="{FS}" fill="{FG}">{spans}</text>'
+    def text_at(x, y, content, fill, bold=False, width=None):
+        tl = f' textLength="{width:.0f}" lengthAdjust="spacingAndGlyphs"' if width else ""
+        b = ' font-weight="bold"' if bold else ""
+        return (
+            f'<text x="{x:.1f}" y="{y:.1f}" xml:space="preserve" font-family="{FONT}" '
+            f'font-size="{FS}" fill="{fill}"{b}{tl}>{escape(content)}</text>'
         )
 
-    emit(0, f'<tspan fill="{GREEN}">$ </tspan><tspan fill="#e6edf3" font-weight="bold">cat tech-stack.txt</tspan>')
-    for i, (key, items) in enumerate(STACK):
-        pad = " " * max(1, KEY_W - len(key))
-        sep = f'<tspan fill="{DIM}"> · </tspan>'
-        vals = sep.join(
-            f'<tspan fill="{BLUE if j == 0 else FG}">{escape(item)}</tspan>'
-            for j, item in enumerate(items)
-        )
-        emit(i + 1, f'<tspan fill="{KEY}">{escape(key)}</tspan><tspan>{escape(pad)}</tspan>{vals}')
+    def open_line(i):
+        cls = "" if STATIC else f' class="l" style="animation-delay:{T0 + i * STAGGER:.2f}s"'
+        return f"<g{cls}>"
+
+    y0 = BAR_H + 30
+
+    # command line
+    y = y0
+    p.append(open_line(0))
+    p.append(text_at(PAD_X, y, "$", GREEN))
+    p.append(text_at(PAD_X + 2 * CH, y, "cat tech-stack.txt", "#e6edf3", bold=True))
+    p.append("</g>")
+
+    for li, (key, items) in enumerate(STACK):
+        y = y0 + (li + 1) * LINE_H
+        p.append(open_line(li + 1))
+        p.append(text_at(PAD_X, y, key, KEY, width=len(key) * CH))
+        x = ITEM_X
+        for j, item in enumerate(items):
+            if j:  # separator dot
+                p.append(f'<circle cx="{x + SEP / 2:.1f}" cy="{y - 4:.1f}" r="1.5" fill="{DIM}"/>')
+                x += SEP
+            icon = ICONS.get(item)
+            if icon:
+                s = ICON / 24
+                p.append(
+                    f'<path transform="translate({x:.1f},{y - 10.5:.1f}) scale({s:.4f})" '
+                    f'fill="{icon["color"]}" d="{icon["d"]}"/>'
+                )
+            else:
+                c = CHIP_COLORS.get(item, DIM)
+                p.append(f'<rect x="{x + 1.5:.1f}" y="{y - 9:.1f}" width="10" height="10" rx="3" fill="{c}"/>')
+            x += ICON + ICON_GAP
+            p.append(text_at(x, y, item, FG, width=len(item) * CH))
+            x += len(item) * CH
+        p.append("</g>")
+        if x > W - PAD_X:
+            print(f"WARNING: line '{key}' overflows: ends at {x:.0f}px")
 
     p.append("</svg>")
     svg = "".join(p)

@@ -26,27 +26,24 @@ DIM = "#8b949e"
 W = 490
 BAR_H = 36
 PAD_X = 20
-LINE_H = 21.5
+LINE_H = 27.4  # airy spacing; keeps the card's height matched to the portrait
 FS = 13
 
 KEY_W = 11  # key column width in characters
 
 STATIC = os.environ.get("STATIC") == "1"
 
-# (key, value, value_color) — key "$" -> command line
+# (key, value, value_color) — key "$" -> command line, "" -> continuation
 LINES = [
     ("$", "whoami --verbose", None),
     ("Name:", "Syed Zulqarnain Hassan", None),
     ("Role:", "AI/ML Engineer · Data Scientist", None),
-    ("Base:", "Dix Hills, NY (US)", None),
-    ("Degree:", "M.S. Data Science — NYIT '26 · 3.86 GPA", None),
-    ("Edu:", "B.S. EE — FAST-NUCES Lahore '24", None),
+    ("Base:", "New York", None),
+    ("Degrees:", "M.S. Data Science — NYIT '26 · 3.86 GPA", None),
+    ("", "B.S. Computer Engineering — FAST-NUCES '24", None),
     ("Award:", "Data Science Graduate Achievement Award", None),
     ("Founder:", "Altechra — AI software agency", None),
     ("Shipped:", "38+ client AI/ML projects · Top Rated", None),
-    ("Research:", "LLMs & semantic search @ NYIT CoECS", None),
-    ("Focus:", "LLM apps · RAG · production ML", None),
-    ("Speaks:", "English · Urdu · Arabic · Chinese", None),
     ("Contact:", "linkedin.com/in/syedzulqarnainh", BLUE),
     ("Status:", "open to DS · ML · AI roles", GREEN),
 ]
@@ -67,6 +64,8 @@ def line_svg(i, key, val, val_color):
             f'<tspan fill="{GREEN}">$ </tspan>'
             f'<tspan fill="#e6edf3" font-weight="bold">{escape(val)}</tspan>'
         )
+    elif key == "":  # continuation line — value aligned under the one above
+        spans = f'<tspan fill="{val_color or FG}">{escape(" " * KEY_W + val)}</tspan>'
     else:
         pad = " " * max(1, KEY_W - len(key))
         spans = (
