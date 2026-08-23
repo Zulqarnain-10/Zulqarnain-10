@@ -1,13 +1,13 @@
 {
 "user": "Zulqarnain-10",
-"generated": "2026-08-22",
-"total": 3429,
+"generated": "2026-08-23",
+"total": 3365,
 "range": {
-"start": "2025-08-17",
-"end": "2026-08-22"
+"start": "2025-08-24",
+"end": "2026-08-23"
 },
 "stats": {
-"current_streak": 26,
+"current_streak": 0,
 "longest_streak": 94,
 "best_day": {
 "date": "2026-08-18",
@@ -15,41 +15,6 @@
 }
 },
 "days": [
-{
-"date": "2025-08-17",
-"count": 7,
-"level": 2
-},
-{
-"date": "2025-08-18",
-"count": 11,
-"level": 3
-},
-{
-"date": "2025-08-19",
-"count": 11,
-"level": 3
-},
-{
-"date": "2025-08-20",
-"count": 10,
-"level": 3
-},
-{
-"date": "2025-08-21",
-"count": 7,
-"level": 2
-},
-{
-"date": "2025-08-22",
-"count": 10,
-"level": 3
-},
-{
-"date": "2025-08-23",
-"count": 8,
-"level": 2
-},
 {
 "date": "2025-08-24",
 "count": 6,
@@ -1869,6 +1834,11 @@
 "date": "2026-08-22",
 "count": 7,
 "level": 2
+},
+{
+"date": "2026-08-23",
+"count": 0,
+"level": 0
 }
 ]
 }
